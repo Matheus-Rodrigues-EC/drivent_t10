@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Address, Enrollment } from '@prisma/client';
 import { request } from '@/utils/request';
 import { invalidDataError, notFoundError } from '@/errors';
@@ -54,6 +53,9 @@ type GetAddressResult = Omit<Address, 'createdAt' | 'updatedAt' | 'enrollmentId'
 async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollmentWithAddress) {
   const enrollment = exclude(params, 'address');
   const address = getAddressForUpsert(params.address);
+
+  const result = await request.get(`${process.env.VIA_CEP_API}/${address.cep}/json/`);
+  if(result.status !== 200 || result.data.erro) throw notFoundError();
 
   // TODO - Verificar se o CEP é válido antes de associar ao enrollment.
 
