@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Address, Enrollment } from '@prisma/client';
 import { request } from '@/utils/request';
 import { invalidDataError, notFoundError } from '@/errors';
@@ -6,16 +7,16 @@ import enrollmentRepository, { CreateEnrollmentParams } from '@/repositories/enr
 import { exclude } from '@/utils/prisma-utils';
 
 // TODO - Receber o CEP por parâmetro nesta função.
-async function getAddressFromCEP(cep: number) {
+async function getAddressFromCEP(cep: string) {
 
   // FIXME: está com CEP fixo!
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
-  if (!result.data) {
+  if (!result.data || result.data.erro) {
     throw notFoundError();
   }
 
-  // const info: ViaCEPAddress = result.data;
+  // FIXME: não estamos interessados em todos os campos
   const info = {
     logradouro: result.data.logradouro,
     complemento: result.data.complemento,
@@ -23,9 +24,6 @@ async function getAddressFromCEP(cep: number) {
     cidade: result.data.localidade,
     uf: result.data.uf
   }
-
-
-  // FIXME: não estamos interessados em todos os campos
   return info;
 }
 

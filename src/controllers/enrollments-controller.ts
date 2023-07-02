@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
@@ -16,8 +17,7 @@ export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Respon
 }
 
 export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, res: Response) {
-  const cep = Number(req.query.cep);
-  await enrollmentsService.getAddressFromCEP(cep);
+  
 
   try {
     await enrollmentsService.createOrUpdateEnrollmentWithAddress({
@@ -33,13 +33,13 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
 
 // TODO - Receber o CEP do usuário por query params.
 export async function getAddressFromCEP(req: AuthenticatedRequest, res: Response) {
-  const cep = Number(req.query.cep);
+  const cep = String(req.query.cep);
   try {
     const address = await enrollmentsService.getAddressFromCEP(cep);
     res.status(httpStatus.OK).send(address);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-      return res.send(httpStatus.NO_CONTENT);
+      return res.sendStatus(httpStatus.NO_CONTENT);
     }
   }
 }
