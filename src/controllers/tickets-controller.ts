@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import httpStatus from "http-status";
-import { Ticket } from "@prisma/client";
 import ticketService from "@/services/tickets-service";
 import { AuthenticatedRequest } from "@/middlewares";
 
@@ -15,10 +14,9 @@ export async function getTicketsType(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function getUserTickets(req: AuthenticatedRequest, res: Response) {
-    const userId = Number(req.headers.userid);
+    const userId = Number(req);
     try {
         const tickets = await ticketService.getTicketsUserById(userId);
-        if(tickets === httpStatus.NOT_FOUND) return res.sendStatus(httpStatus.NOT_FOUND);
 
         return res.status(200).send(tickets);
     } catch (error) {
@@ -29,6 +27,7 @@ export async function getUserTickets(req: AuthenticatedRequest, res: Response) {
 export async function createTicket(req: AuthenticatedRequest, res: Response){
     const {ticketTypeId} = req.body as {ticketTypeId: number};
     const {userId} = req;
+    if(!ticketTypeId) return res.sendStatus(httpStatus.BAD_REQUEST);
     
     try {
         await ticketService.createTicket(ticketTypeId, userId);
