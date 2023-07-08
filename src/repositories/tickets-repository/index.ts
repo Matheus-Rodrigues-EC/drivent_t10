@@ -1,4 +1,4 @@
-// import { Ticket } from "@prisma/client";
+import { Prisma, Ticket, TicketType } from "@prisma/client";
 import { prisma } from "@/config";
 
 
@@ -30,6 +30,40 @@ async function findTicketByType (id: number){
     })
 }
 
+type TicketResult =  Ticket & {
+    ticketType: TicketType
+}
+
+async function findTicketsByUserId(userId: number): Promise<TicketResult[]> {
+    return await prisma.$queryRaw(
+        Prisma.sql`
+        SELECT
+        "Ticket".id,
+        "Ticket".status,
+        "Ticket"."ticketTypeId",
+        "Ticket"."enrollmentId",
+        json_build_object(
+            'id', "TicketType".id,
+            'name', "TicketType".name,
+            'price', "TicketType".price,
+            'isRemote', "TicketType"."isRemote",
+            'includesHotel', "TicketType"."includesHotel",
+            'createdAt', to_char("TicketType"."createdAt", 'YYYY-MM-DD"T"HH24:MI:SS.MSZ'),
+            'updatedAt', to_char("TicketType"."updatedAt", 'YYYY-MM-DD"T"HH24:MI:SS.MSZ')
+        ) AS "TicketType",
+            to_char("Ticket"."createdAt", 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS "createdAt",
+            to_char("Ticket"."updatedAt", 'YYYY-MM-DD"T"HH24:MI:SS.MSZ') AS "updatedAt"
+        FROM
+            "Enrollment"
+            JOIN
+            "Ticket" ON "Enrollment".id = "Ticket"."enrollmentId"
+            JOIN
+            "TicketType" ON "Ticket"."ticketTypeId" = "TicketType".id
+        WHERE
+            "Enrollment"."userId" = ${userId};
+        `
+    );
+}
 
 async function addTicket(ticketTypeId: number, enrollmentId: number){
     return prisma.ticket.create({
@@ -57,6 +91,7 @@ const ticketsRepository = {
     findTicketsById,
     findTicketByTicketId,
     findTicketByType,
+    findTicketsByUserId,
     addTicket,
     updateStatusTicket
 }

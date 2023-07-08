@@ -7,11 +7,11 @@ export async function getTypes() {
     return types;
 }
 
-export async function getTicketsUserById(userId: number) {
+export async function getTicketsByUserId(userId: number) {
     const user = await enrollmentRepository.findEnrollmentByUserId(userId);
     if(!user) return 404;
 
-    const tickets = await ticketsRepository.findTicketsById(userId);
+    const tickets = await ticketsRepository.findTicketsByUserId(userId);
     if(!tickets) return 404;
 
     return tickets;
@@ -26,7 +26,7 @@ export async function createTicket (ticketTypeId: number, userId: number) {
 
 const ticketService = {
     getTypes,
-    getTicketsUserById,
+    getTicketsByUserId,
     createTicket
 }
 

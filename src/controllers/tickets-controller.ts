@@ -17,7 +17,7 @@ export async function getUserTickets(req: AuthenticatedRequest, res: Response) {
     const userId = Number(req);
     if(!userId) return res.sendStatus(httpStatus.NOT_FOUND);
     try {
-        const tickets = await ticketService.getTicketsUserById(userId);
+        const tickets = await ticketService.getTicketsByUserId(userId);
         if(tickets === 404) return res.sendStatus(httpStatus.NOT_FOUND);
 
         return res.status(200).send(tickets);
@@ -35,7 +35,7 @@ export async function createTicket(req: AuthenticatedRequest, res: Response){
         const verify = await ticketService.createTicket(ticketTypeId, userId);
         if(verify === 400) return res.sendStatus(httpStatus.BAD_REQUEST);
         if(verify === 404) return res.sendStatus(httpStatus.NOT_FOUND);
-        const ticket = await ticketService.getTicketsUserById(userId);
+        const ticket = await ticketService.getTicketsByUserId(userId);
         return res.status(httpStatus.CREATED).send(ticket);
     } catch (error) {
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
