@@ -1,4 +1,3 @@
-import httpStatus from 'http-status';
 import { PaymentReqBody } from '@/protocols';
 import ticketsRepository from '@/repositories/tickets-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
@@ -10,7 +9,7 @@ async function getTicketPayment(ticketId: number, userId: number){
 
     const user = await enrollmentRepository.findEnrollmentByUserId(ticketByTicketId.enrollmentId);
     if(user.userId !== userId) return 401;
-
+    
     const payment = await paymentsRepository.findTicketPayment(ticketId);
     if(!payment) return 404;
 
