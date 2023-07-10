@@ -6,7 +6,7 @@ import paymentsRepository from '@/repositories/payments-repository';
 
 async function getTicketPayment(ticketId: number, userId: number){
     const ticketByTicketId = await ticketsRepository.findTicketByTicketId(ticketId);
-    if(!ticketByTicketId) return httpStatus.NOT_FOUND;
+    if(!ticketByTicketId) return 404;
 
     const user = await enrollmentRepository.findEnrollmentByUserId(ticketByTicketId.enrollmentId);
     if(user.userId !== userId) return 401;
@@ -20,7 +20,7 @@ async function getTicketPayment(ticketId: number, userId: number){
 async function createPayment(body: PaymentReqBody, userId: number) {
     
     const ticket = await ticketsRepository.findTicketByTicketId(body.ticketId);
-    if(!ticket) return httpStatus.NOT_FOUND;
+    if(!ticket) return 404;
 
     const user = await enrollmentRepository.findEnrollmentByUserId(ticket.enrollmentId);
     if(user.userId !== userId) return 401;

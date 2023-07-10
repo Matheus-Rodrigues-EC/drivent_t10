@@ -1,4 +1,4 @@
-import { Ticket, TicketType } from "@prisma/client";
+// import { Ticket, TicketType } from "@prisma/client";
 import { prisma } from "@/config";
 
 

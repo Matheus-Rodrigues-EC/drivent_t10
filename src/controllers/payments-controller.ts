@@ -31,7 +31,8 @@ export async function createPayment(req: AuthenticatedRequest, res: Response){
 
     try {
         const ticket = await paymentsService.createPayment(body, userId);
-        if(ticket === 401) return res.sendStatus(401);
+        if(ticket === 401) return res.sendStatus(httpStatus.UNAUTHORIZED);
+        if(ticket === 404) return res.sendStatus(httpStatus.NOT_FOUND);
         return res.status(httpStatus.OK).send(ticket);
     } catch (error) {
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
