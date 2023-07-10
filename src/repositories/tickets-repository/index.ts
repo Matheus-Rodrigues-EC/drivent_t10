@@ -10,7 +10,8 @@ async function findTicketsById(userId: number) {
     return prisma.ticket.findFirst({
         where:{
             id: userId
-        }
+        },
+        include: {TicketType: true}
     })
 }
 
@@ -18,7 +19,8 @@ async function findTicketByTicketId (ticketId: number){
     return await prisma.ticket.findFirst({
         where: {
             id: ticketId
-        }
+        },
+        include: {TicketType: true}
     })
 }
 
@@ -61,7 +63,7 @@ async function findTicketsByUserId(userId: number): Promise<TicketResult[]> {
             "TicketType" ON "Ticket"."ticketTypeId" = "TicketType".id
         WHERE
             "Enrollment"."userId" = ${userId};
-        `
+        `,
     );
 }
 
@@ -71,7 +73,8 @@ async function addTicket(ticketTypeId: number, enrollmentId: number){
             ticketTypeId: ticketTypeId,
             status: "RESERVED",
             enrollmentId: enrollmentId
-        }
+        },
+        include: {TicketType: true}
     })
 
 }
