@@ -11,7 +11,7 @@ export async function getTicketsByUserId(userId: number) {
     const user = await enrollmentRepository.findEnrollmentByUserId(userId);
     if(!user) return 404;
 
-    const tickets = await ticketsRepository.findTicketsByUserId(userId);
+    const tickets = await ticketsRepository.findTicketsByUserId(user.id);
     if(!tickets) return 404;
 
     return tickets;
