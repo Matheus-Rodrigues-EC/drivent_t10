@@ -12,7 +12,9 @@ export async function getTicketPaymentStatus(req: AuthenticatedRequest, res: Res
     try {
 
         const ticket = await paymentsService.getTicketPayment(ticketId, userId);
-        // if(!ticket) return res.sendStatus(httpStatus.NOT_FOUND);
+        if(!ticket) return res.sendStatus(httpStatus.NOT_FOUND);
+        if(ticket === 401) return res.sendStatus(httpStatus.UNAUTHORIZED);
+        if(ticket === 404) return res.sendStatus(httpStatus.NOT_FOUND);
 
         return res.status(httpStatus.OK).send(ticket);
     } catch (error) {
@@ -29,6 +31,7 @@ export async function createPayment(req: AuthenticatedRequest, res: Response){
 
     try {
         const ticket = await paymentsService.createPayment(body, userId);
+        if(ticket === 401) return res.sendStatus(401);
         return res.status(httpStatus.OK).send(ticket);
     } catch (error) {
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);

@@ -9,10 +9,10 @@ async function getTicketPayment(ticketId: number, userId: number){
     if(!ticketByTicketId) return httpStatus.NOT_FOUND;
 
     const user = await enrollmentRepository.findEnrollmentByUserId(ticketByTicketId.enrollmentId);
-    if(user.userId !== userId) return httpStatus.UNAUTHORIZED;
+    if(user.userId !== userId) return 401;
 
     const payment = await paymentsRepository.findTicketPayment(ticketId);
-    if(!payment) return httpStatus.NOT_FOUND
+    if(!payment) return 404;
 
     return payment
 }
@@ -23,7 +23,7 @@ async function createPayment(body: PaymentReqBody, userId: number) {
     if(!ticket) return httpStatus.NOT_FOUND;
 
     const user = await enrollmentRepository.findEnrollmentByUserId(ticket.enrollmentId);
-    if(user.userId !== userId) return httpStatus.UNAUTHORIZED;
+    if(user.userId !== userId) return 401;
 
     const type = await ticketsRepository.findTicketByType(ticket.ticketTypeId);
 
