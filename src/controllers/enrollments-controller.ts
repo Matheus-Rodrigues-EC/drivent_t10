@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response } from 'express'
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
 import enrollmentsService from '@/services/enrollments-service';
@@ -22,7 +22,6 @@ export async function postCreateOrUpdateEnrollment(req: AuthenticatedRequest, re
         ...req.body,
         userId: req.userId,
         });
-
         return res.sendStatus(httpStatus.OK);
     } catch (error) {
         return res.sendStatus(httpStatus.BAD_REQUEST);
