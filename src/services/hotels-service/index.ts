@@ -9,7 +9,12 @@ async function getHotels(userId: number){
     if(!ticket) return 404;
     const ticketType = await ticketsRepository.getTicketByType(ticket.ticketTypeId);
 
-    if(ticket.status === "RESERVED" || ticketType.isRemote === true || ticketType.includesHotel === false) return 402;
+    if(    ticket.status === "RESERVED" 
+        || ticketType.isRemote === true 
+        || ticketType.includesHotel === false) {
+    
+        return 402;
+    }
 
     const hotels = await hotelRepository.findHotels();
     if(hotels.length === 0) return 404;

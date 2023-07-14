@@ -77,7 +77,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketType();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
 
-            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -89,7 +89,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketTypeRemote();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -101,7 +101,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketTypeRemote();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -113,7 +113,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketType();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.OK);
         });
