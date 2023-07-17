@@ -21,15 +21,16 @@ beforeEach(async () => {
 const server = supertest(app);
 
 describe("GET /hotels", () => {
-    it("Should respond with 401 if token isn't given", async () =>{
-        const res = await server.get('/tickets/types');
-
-        expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
-    });
 
     it("Should respond with status 401 if given token isn't valid", async () => {
         const token = faker.lorem.word();
         const res = await server.get('/tickets/types').set('Authorization', `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
+    }); 
+
+    it("Should respond with 401 if token isn't given", async () =>{
+        const res = await server.get('/tickets/types');
 
         expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
     });
@@ -77,7 +78,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketType();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
 
-            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -89,7 +90,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketTypeRemote();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -101,7 +102,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketTypeRemote();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.PAYMENT_REQUIRED);
         });
@@ -113,7 +114,7 @@ describe("GET /hotels", () => {
             const ticketType = await createTicketType();
             await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
-            const res = await server.get(`/hotels`).set('Authorization', `Bearer ${token}`);
+            const res = await server.get(`/hotels/`).set('Authorization', `Bearer ${token}`);
 
             expect(res.statusCode).toEqual(httpStatus.OK);
         });
@@ -122,15 +123,16 @@ describe("GET /hotels", () => {
 })
 
 describe("GET /hotels/:hotelId", () => {
-    it("Should respond with status 401 if token isn't given", async () => {
-        const res = await server.get('/tickets/types');
 
-        expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
-    });
-    
     it("Should respond with status 401 if given token isn't valid", async () => {
         const token = faker.lorem.word();
         const res = await server.get('/tickets/types').set('Authorization', `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    it("Should respond with status 401 if token isn't given", async () => {
+        const res = await server.get('/tickets/types');
 
         expect(res.statusCode).toBe(httpStatus.UNAUTHORIZED);
     });
