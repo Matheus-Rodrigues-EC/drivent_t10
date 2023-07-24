@@ -43,6 +43,19 @@ async function findTickeWithTypeById(ticketId: number) {
   });
 }
 
+async function findUserTickets(userId: number) {
+  return await prisma.ticket.findMany({
+    where: {
+      Enrollment: {
+        userId,
+      },
+    },
+    include: {
+      TicketType: true,
+    }
+  })
+}
+
 async function ticketProcessPayment(ticketId: number) {
   return prisma.ticket.update({
     where: {
@@ -68,6 +81,7 @@ export default {
   createTicket,
   findTickeyById,
   findTickeWithTypeById,
+  findUserTickets,
   ticketProcessPayment,
   getTicketByType,
 };
