@@ -1,40 +1,43 @@
 import hotelRepository from '@/repositories/hotel-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
+
+import { notFoundError } from '@/errors';
 import ticketsRepository from '@/repositories/tickets-repository';
+import { cannotListHotelsError } from '@/errors/cannot-list-hotels-error';
 
-async function getHotels(userId: number){
-    const user = await enrollmentRepository.findById(userId);
-    if(!user) return 404;
-    const ticket = await ticketsRepository.findTicketByEnrollmentId(user.id);
-    if(!ticket) return 404;
-    const ticketType = await ticketsRepository.getTicketByType(ticket.ticketTypeId);
+async function listHotels(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    throw notFoundError();
+  }
+  const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
 
-    if(    ticket.status === "RESERVED" 
-        || ticketType.isRemote === true 
-        || ticketType.includesHotel === false) {
-    
-        return 402;
-    }
-
-    const hotels = await hotelRepository.findHotels();
-    if(hotels.length === 0) return 404;
-    return hotels;
+  if (!ticket || ticket.status === 'RESERVED' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
+    throw cannotListHotelsError(); // LANÇA UM ERRO PARA A FUNÇÃO QUE O CHAMOU
+  }
 }
 
-async function getHotelById(hotelId: number, userId: number){
-    const user = await enrollmentRepository.findById(userId);
-    if(!user) return 404;
-    const ticket = await ticketsRepository.findTicketByEnrollmentId(user.id);
-    if(!ticket) return 404;
-    const ticketType = await ticketsRepository.getTicketByType(ticket.ticketTypeId);
+async function getHotels(userId: number) {
+  await listHotels(userId);
 
-    if(ticket.status === "RESERVED" || ticketType.isRemote === true || ticketType.includesHotel === false) return 402;
-
-    const hotel = await hotelRepository.findHotelById(hotelId);
-    if(!hotel) return 404;
-    return hotel
+  const hotels = await hotelRepository.findHotels();
+  return hotels;
 }
 
-const hotelsService = { getHotels, getHotelById };
+async function getHotelsWithRooms(userId: number, hotelId: number) {
+  await listHotels(userId);
+
+  const hotel = await hotelRepository.findRoomsByHotelId(hotelId);
+
+  if (!hotel) {
+    throw notFoundError();
+  }
+  return hotel;
+}
+
+const hotelsService = {
+  getHotels,
+  getHotelsWithRooms,
+};
 
 export default hotelsService;
