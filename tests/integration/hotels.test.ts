@@ -8,7 +8,7 @@ import {
   createEnrollmentWithAddress,
   createHotel,
   createPayment,
-  createRoomWithHotelId,
+  createHotelRooms,
   createTicket,
   createTicketTypeRemote,
   createTicketTypeWithHotel,
@@ -190,7 +190,7 @@ describe('GET /hotels/:hotelId', () => {
 
       const createdHotel = await createHotel();
 
-      const createdRoom = await createRoomWithHotelId(createdHotel.id);
+      const createdRoom = await createHotelRooms(createdHotel.id);
 
       const response = await server.get(`/hotels/${createdHotel.id}`).set('Authorization', `Bearer ${token}`);
 

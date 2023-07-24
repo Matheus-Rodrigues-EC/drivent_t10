@@ -10,7 +10,7 @@ import {
     createHotel,
     createHotelRooms,
     createBooking,
-    getBookingWithRoomData
+    //getBookingWithRoomData
 } from "../factories";
 
 
